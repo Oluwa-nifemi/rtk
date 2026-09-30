@@ -37,6 +37,7 @@ pub enum Host {
     Gemini,
     Droid,
     Vibe,
+    Codex,
 }
 
 pub fn check_command_for(cmd: &str, host: Host) -> PermissionVerdict {
@@ -46,6 +47,10 @@ pub fn check_command_for(cmd: &str, host: Host) -> PermissionVerdict {
         Host::Gemini => load_gemini_rules(),
         Host::Droid => load_droid_rules(),
         Host::Vibe => (Vec::new(), Vec::new(), Vec::new()),
+        // Codex's own PreToolUse hooks handle deny/ask policy independently
+        // (see learn.chatgpt.com/docs/hooks#pretooluse); rtk doesn't read
+        // Codex approval config, it only rewrites, so there's no rule set here.
+        Host::Codex => (Vec::new(), Vec::new(), Vec::new()),
     };
     check_command_with_rules(cmd, &deny_rules, &ask_rules, &allow_rules)
 }
